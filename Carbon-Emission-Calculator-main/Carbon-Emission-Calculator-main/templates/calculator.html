@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Enter Data - Carbon Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="text-center mb-5 text-success"><i class="fas fa-calculator"></i> Enter Your Data</h1>
+        <form action="/calculate" method="POST" class="card shadow p-4">
+            <div class="accordion" id="inputAccordion">
+                <!-- General -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#general">General Information</button>
+                    </h2>
+                    <div class="accordion-item border-0 shadow-sm rounded mb-3">
+    <h2 class="accordion-header" id="headingGeneral">
+        <button class="accordion-button fw-semibold text-primary bg-light" type="button" 
+                data-bs-toggle="collapse" data-bs-target="#general" 
+                aria-expanded="true" aria-controls="general">
+            <i class="fas fa-users me-3"></i>
+            General Information
+            <span class="badge bg-primary rounded-pill ms-auto">Required</span>
+        </button>
+    </h2>
+    <div id="general" class="accordion-collapse collapse show" 
+         aria-labelledby="headingGeneral">
+        <div class="accordion-body pt-4">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <label for="headcount" class="form-label fw-medium text-dark">
+                        <i class="fas fa-user-friends text-success me-2"></i>
+                        Total Employee Headcount
+                    </label>
+                    <p class="text-muted small mb-2">
+                        Number of full-time equivalent employees during the reporting year
+                    </p>
+                    <input type="number" 
+                           id="headcount" 
+                           name="headcount" 
+                           class="form-control form-control-lg" 
+                           min="1" 
+                           value="1" 
+                           placeholder="e.g., 50" 
+                           required>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    <div class="bg-light rounded p-4">
+                        <i class="fas fa-building fa-3x text-primary opacity-75"></i>
+                        <p class="mt-3 text-muted small">Company-wide total</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <small class="text-danger">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    Headcount is required for per-employee metrics and commuting calculations
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+                
+                <!-- Scope 2 -->
+               <div class="accordion-item border-0 shadow-sm rounded mb-3">
+    <h2 class="accordion-header" id="headingScope2">
+        <button class="accordion-button collapsed fw-semibold text-warning bg-light" type="button" 
+                data-bs-toggle="collapse" data-bs-target="#scope2" 
+                aria-expanded="false" aria-controls="scope2">
+            <i class="fas fa-bolt me-3 text-warning"></i>
+             Purchased Electricity
+            <span class="badge bg-warning text-dark rounded-pill ms-auto">Location-Based</span>
+        </button>
+    </h2>
+    <div id="scope2" class="accordion-collapse collapse" 
+         aria-labelledby="headingScope2">
+        <div class="accordion-body pt-4">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <label for="electricity_kwh" class="form-label fw-medium text-dark">
+                        <i class="fas fa-plug text-info me-2"></i>
+                        Annual Electricity Consumption
+                    </label>
+                    <p class="text-muted small mb-2">
+                        Total purchased electricity from the grid (in kWh per year). You can find this on your utility bills or from your electricity provider.
+                    </p>
+                    <div class="input-group input-group-lg">
+                        <input type="number" 
+                               id="electricity_kwh" 
+                               name="electricity_kwh" 
+                               class="form-control" 
+                               min="0" 
+                               value="0" 
+                               placeholder="e.g., 150000">
+                        <span class="input-group-text">kWh/year</span>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Uses Bangladesh grid emission factor (~0.62 kg CO₂e/kWh, 2024 avg)
+                        </small>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    <div class="bg-light rounded p-4">
+                        <i class="fas fa-tachometer-alt fa-3x text-warning opacity-75"></i>
+                        <p class="mt-3 text-muted small">Grid Electricity Meter</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                
+                <!-- Scope 2 -->
+<div class="accordion-item border-0 shadow-sm rounded mb-3">
+    <h2 class="accordion-header" id="headingScope1">
+        <button class="accordion-button collapsed fw-semibold text-danger bg-light" type="button" 
+                data-bs-toggle="collapse" data-bs-target="#scope1" 
+                aria-expanded="false" aria-controls="scope1">
+            <i class="fas fa-industry me-3 text-danger"></i>
+             Direct Emissions
+            <span class="badge bg-danger rounded-pill ms-auto">On-Site Sources</span>
+        </button>
+    </h2>
+    <div id="scope1" class="accordion-collapse collapse" 
+         aria-labelledby="headingScope1">
+        <div class="accordion-body pt-4">
+
+            <!-- Generator Fuel -->
+            <div class="row align-items-center mb-5">
+                <div class="col-lg-8">
+                    <label class="form-label fw-medium text-dark">
+                        <i class="fas fa-gas-pump text-danger me-2"></i>
+                        Backup Generator Fuel Consumption
+                    </label>
+                    <p class="text-muted small mb-3">
+                        Annual fuel used in diesel/petrol generators (common during power outages in Bangladesh).
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group input-group-lg">
+                                <input type="number" name="generator_fuel_liters" class="form-control" min="0" value="0" placeholder="e.g., 5000">
+                                <span class="input-group-text">liters/year</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-3 mt-md-0">
+                            <select name="generator_fuel_type" class="form-select form-select-lg">
+                                <option value="diesel">Diesel</option>
+                                <option value="petrol">Petrol</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    <div class="bg-light rounded p-4">
+                        <i class="fas fa-cog fa-spin fa-3x text-danger opacity-75"></i>
+                        <p class="mt-3 text-muted small">Diesel Generator</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Refrigerants -->
+            <div class="row align-items-center mb-5">
+                <div class="col-lg-8">
+                    <label class="form-label fw-medium text-dark">
+                        <i class="fas fa-snowflake text-primary me-2"></i>
+                        Refrigerant Leakage / Top-Up
+                    </label>
+                    <p class="text-muted small mb-3">
+                        Amount of refrigerant added annually (approximates leakage). Common in office AC systems.
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group input-group-lg">
+                                <input type="number" name="refrigerant_kg" class="form-control" min="0" step="0.1" value="0" placeholder="e.g., 5">
+                                <span class="input-group-text">kg/year</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-3 mt-md-0">
+                            <select name="refrigerant_type" class="form-select form-select-lg">
+                                <option>R-410A</option>
+                                <option>R-22</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Uses Global Warming Potential (GWP) values – very high impact!
+                        </small>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    <div class="bg-light rounded p-4">
+                        <i class="fas fa-wind fa-3x text-primary opacity-75"></i>
+                        <p class="mt-3 text-muted small">Air Conditioning Unit</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company Vehicles -->
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <label class="form-label fw-medium text-dark">
+                        <i class="fas fa-car text-secondary me-2"></i>
+                        Company-Owned Vehicles
+                    </label>
+                    <p class="text-muted small mb-3">
+                        Does your company own/operate vehicles (cars, vans, etc.)?
+                    </p>
+                    <div class="form-check form-check-inline me-4">
+                        <input class="form-check-input" type="radio" name="owns_vehicles" value="yes" id="vehiclesYes">
+                        <label class="form-check-label fw-medium" for="vehiclesYes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="owns_vehicles" value="no" id="vehiclesNo" checked>
+                        <label class="form-check-label fw-medium" for="vehiclesNo">No</label>
+                    </div>
+
+                    <div id="vehicleFields" class="mt-4" style="display:none;">
+                        <hr class="my-4">
+                        <p class="text-muted small mb-3">Annual fuel consumption for company fleet:</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group input-group-lg">
+                                    <input type="number" name="vehicle_fuel_volume" class="form-control" min="0" value="0" placeholder="e.g., 2000">
+                                    <span class="input-group-text">liters or m³/year</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3 mt-md-0">
+                                <select name="vehicle_fuel_type" class="form-select form-select-lg">
+                                    <option value="diesel">Diesel</option>
+                                    <option value="petrol">Petrol</option>
+                                    <option value="cng">CNG</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    <div class="bg-light rounded p-4">
+                        <i class="fas fa-truck fa-3x text-secondary opacity-75"></i>
+                        <p class="mt-3 text-muted small">Company Fleet</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+                
+                <!-- Scope 3 -->
+               <div class="accordion-item border-0 shadow-sm rounded mb-3">
+    <h2 class="accordion-header" id="headingScope3">
+        <button class="accordion-button collapsed fw-semibold text-info bg-light" type="button" 
+                data-bs-toggle="collapse" data-bs-target="#scope3" 
+                aria-expanded="false" aria-controls="scope3">
+            <i class="fas fa-project-diagram me-3 text-info"></i>
+             Upstream & Indirect Emissions
+            <span class="badge bg-info text-dark rounded-pill ms-auto">Value Chain</span>
+        </button>
+    </h2>
+    <div id="scope3" class="accordion-collapse collapse" 
+         aria-labelledby="headingScope3">
+        <div class="accordion-body pt-4">
+
+            <!-- IT Spend (Hardware & Cloud) -->
+            <div class="row align-items-center mb-5">
+                <div class="col-lg-8">
+                    <label class="form-label fw-medium text-dark">
+                        <i class="fas fa-shopping-cart text-success me-2"></i>
+                        Purchased Goods & Services (IT Spend)
+                    </label>
+                    <p class="text-muted small mb-3">
+                        Annual spending on electronics and cloud services. Uses EPA spend-based emission factors.
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text">$</span>
+                                <input type="number" name="electronics_spend_usd" class="form-control" min="0" value="0" placeholder="e.g., 25000">
+                                <span class="input-group-text">USD/year</span>
+                            </div>
+                            <small class="text-muted d-block mt-1 ms-1">Electronics & Hardware</small>
+                        </div>
+                        <div class="col-md-6 mt-3 mt-md-0">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text">$</span>
+                                <input type="number" name="cloud_spend_usd" class="form-control" min="0" value="0" placeholder="e.g., 12000">
+                                <span class="input-group-text">USD/year</span>
+                            </div>
+                            <small class="text-muted d-block mt-1 ms-1">Cloud & Data Services</small>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            ~0.25 kg CO₂e per USD (hardware), ~0.20 kg CO₂e per USD (cloud)
+                        </small>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    <div class="bg-light rounded p-4">
+                        <i class="fas fa-laptop-code fa-3x text-success opacity-75"></i>
+                        <p class="mt-3 text-muted small">IT Purchases & Cloud</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Flights -->
+            <div class="row align-items-center mb-5">
+                <div class="col-lg-8">
+                    <label class="form-label fw-medium text-dark">
+                        <i class="fas fa-plane-departure text-primary me-2"></i>
+                        Business Air Travel
+                    </label>
+                    <p class="text-muted small mb-3">
+                        Add all employee business flights. Passenger-km = flight distance × number of passengers.
+                    </p>
+                    <div class="mb-3">
+                        <label for="num_flights" class="form-label">Number of Flight Legs</label>
+                        <input type="number" id="num_flights" class="form-control form-control-lg" min="0" max="20" value="0" placeholder="e.g., 8">
+                    </div>
+                    <div id="flights_container" class="bg-light border rounded p-3"></div>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    <div class="bg-light rounded p-4">
+                        <i class="fas fa-plane fa-3x text-primary opacity-75"></i>
+                        <p class="mt-3 text-muted small">Business Flights</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Commuting -->
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <label class="form-label fw-medium text-dark">
+                        <i class="fas fa-commute text-secondary me-2"></i>
+                        Employee Commuting
+                    </label>
+                    <p class="text-muted small mb-3">
+                        Daily commute emissions (round-trip), automatically adjusted for work-from-home days.
+                    </p>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="input-group input-group-lg">
+                                <input type="number" name="avg_commute_distance_km" class="form-control" min="0" step="0.5" value="0" placeholder="e.g., 12">
+                                <span class="input-group-text">km one-way</span>
+                            </div>
+                            <small class="text-muted d-block mt-1 ms-1">Average Distance</small>
+                        </div>
+                        <div class="col-md-6 mt-3 mt-md-0">
+                            <div class="input-group input-group-lg">
+                                <input type="number" name="total_wfh_days" class="form-control" min="0" value="0" placeholder="e.g., 4000">
+                                <span class="input-group-text">days/year (total)</span>
+                            </div>
+                            <small class="text-muted d-block mt-1 ms-1">Work-From-Home Days</small>
+                        </div>
+                    </div>
+
+                    <p class="fw-medium mb-3">Commute Mode Split (% of employees)</p>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label small text-muted">Bus</label>
+                            <div class="input-group">
+                                <input type="number" name="commute_bus" class="form-control" min="0" max="100" value="0">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label small text-muted">CNG Rickshaw</label>
+                            <div class="input-group">
+                                <input type="number" name="commute_cng_rickshaw" class="form-control" min="0" max="100" value="0">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label small text-muted">Rickshaw (human)</label>
+                            <div class="input-group">
+                                <input type="number" name="commute_rickshaw" class="form-control" min="0" max="100" value="0">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label small text-muted">Car</label>
+                            <div class="input-group">
+                                <input type="number" name="commute_car" class="form-control" min="0" max="100" value="0">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Percentages should add up to 100% (or leave blanks for unknown)
+                        </small>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    <div class="bg-light rounded p-4">
+                        <i class="fas fa-bus-alt fa-3x text-secondary opacity-75"></i>
+                        <p class="mt-3 text-muted small">Daily Commute</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- End of Accordion -->
+
+<button type="submit" class="btn btn-success btn-lg w-100 mt-5 shadow-lg">
+    <i class="fas fa-calculator me-2"></i>
+    Calculate Your Carbon Footprint
+    <i class="fas fa-arrow-right ms-3"></i>
+</button>
+</form>
+</div>
+
+<script>
+    // Show/hide company vehicle fields (from Scope 1)
+    document.querySelectorAll('input[name="owns_vehicles"]').forEach(r => {
+        r.addEventListener('change', () => {
+            const vehicleFields = document.getElementById('vehicleFields');
+            if (vehicleFields) {
+                vehicleFields.style.display = r.value === 'yes' ? 'block' : 'none';
+            }
+        });
+    });
+
+    // Dynamic business flights input fields
+    const numFlightsInput = document.getElementById('num_flights');
+    const flightsContainer = document.getElementById('flights_container');
+
+    function updateFlights() {
+        let n = parseInt(numFlightsInput.value) || 0;
+        if (n > 20) n = 20; // safety limit
+        flightsContainer.innerHTML = '';
+
+        for (let i = 0; i < n; i++) {
+            flightsContainer.innerHTML += `
+                <div class="row g-3 align-items-end mb-3 p-3 bg-white rounded shadow-sm">
+                    <div class="col-md-6">
+                        <label class="form-label">Flight ${i + 1} – Total Passenger-km</label>
+                        <input type="number" name="flight_dist_${i}" class="form-control" min="0" value="0" placeholder="e.g., 5000">
+                        <small class="text-muted">Distance × passengers</small>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Class</label>
+                        <select name="flight_class_${i}" class="form-select">
+                            <option value="economy">Economy</option>
+                            <option value="business">Business</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="this.parentElement.parentElement.remove();">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>`;
+        }
+    }
+
+    if (numFlightsInput) {
+        numFlightsInput.addEventListener('change', updateFlights);
+        numFlightsInput.addEventListener('input', updateFlights);
+    }
+</script>
+</body>
+</html>

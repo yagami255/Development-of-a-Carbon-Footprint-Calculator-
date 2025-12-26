@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Results - {{ company_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="text-center mb-4 text-success"><i class="fas fa-chart-bar"></i> Carbon Footprint Results</h1>
+        <h3 class="text-center text-muted mb-5">{{ company_name }}</h3>
+
+        <div class="row mb-5">
+            <div class="col-md-3">
+                <div class="card text-white bg-danger">
+                    <div class="card-body text-center">
+                        <h5>Scope 1</h5>
+                        <h2>{{ "{:.2f}".format(scope1) }} kg CO₂e</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body text-center">
+                        <h5>Scope 2</h5>
+                        <h2>{{ "{:.2f}".format(scope2) }} kg CO₂e</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body text-center">
+                        <h5>Scope 3</h5>
+                        <h2>{{ "{:.2f}".format(scope3) }} kg CO₂e</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body text-center">
+                        <h5>Total</h5>
+                        <h2>{{ "{:.2f}".format(total) }} kg CO₂e</h2>
+                        {% if per_employee > 0 %}
+                        <p class="mt-2">{{ "{:.2f}".format(per_employee) }} kg per employee</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h4>Detailed Breakdown</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Subcategory</th>
+                            <th>Value</th>
+                            <th>Unit</th>
+                            <th>Emissions (kg CO₂e)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for section, items in report_data.items() %}
+                        <tr class="table-active"><td colspan="5"><strong>{{ section }}</strong></td></tr>
+                        {% for item in items %}
+                        <tr>
+                            <td></td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.value }}</td>
+                            <td>{{ item.unit }}</td>
+                            <td>{{ "{:.2f}".format(item.emissions) }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="table-success">
+                            <td></td>
+                            <td><strong>Total {{ section }}</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>{{ "{:.2f}".format(items|sum(attribute='emissions')) }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="table-dark">
+                            <td colspan="4"><strong>Total Emissions</strong></td>
+                            <td><strong>{{ "{:.2f}".format(total) }} kg CO₂e</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+<div class="text-center mt-5">
+    <div class="card shadow-lg border-0 bg-gradient-success text-white p-4 mb-5">
+        <div class="card-body text-center py-5 position-relative overflow-hidden" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);">
+            <!-- Subtle layered background -->
+            <i class="fas fa-leaf fa-7x position-absolute top-50 start-50 translate-middle text-success opacity-10"></i>
+        
+            <h3 class="fw-bold text-success mb-4 display-6">Ready to Export Your Carbon Report?</h3>
+            
+            <p class="lead text-dark mb-5 px-4" style="opacity:0.95; line-height:1.6;">
+                Select your format: <strong>CSV</strong> for spreadsheets & analysis, or <strong>PDF</strong> for polished professional reports.
+            </p>
+            
+            <!-- Compact checklist -->
+            <div class="bg-white rounded-4 p-4 mx-auto shadow-sm mb-4" style="max-width:90%;">
+                <small class="text-success fw-semibold d-flex align-items-center mb-2">
+                    <i class="fas fa-check-circle me-2"></i> Full Scope 1, 2 & 3 breakdowns
+                </small>
+                <small class="text-success fw-semibold d-flex align-items-center mb-2">
+                    <i class="fas fa-check-circle me-2"></i> Per-employee metrics & kg CO₂e totals
+                </small>
+                <small class="text-success fw-semibold d-flex align-items-center">
+                    <i class="fas fa-check-circle me-2"></i> Timestamped & ready for sharing
+                </small>
+            </div>
+            
+            <small class="d-block text-dark fw-medium">
+                <i class="fas fa-info-circle me-1 text-success"></i>
+                Data processed instantly — never stored.
+            </small>
+        </div>
+    </div>
+
+    <!-- Dual Export Buttons -->
+    <div class="row g-4 mb-5 justify-content-center">
+        <!-- CSV -->
+        <div class="col-md-5 col-12">
+            <form action="/export_csv" method="POST">
+                <input type="hidden" name="report_data" value='{{ report_data | tojson }}'>
+                <input type="hidden" name="company_name" value="{{ company_name }}">
+                <input type="hidden" name="scope1" value="{{ scope1 }}">
+                <input type="hidden" name="scope2" value="{{ scope2 }}">
+                <input type="hidden" name="scope3" value="{{ scope3 }}">
+                <input type="hidden" name="total" value="{{ total }}">
+                <input type="hidden" name="per_employee" value="{{ per_employee }}">
+                <button type="submit" class="btn btn-success btn-lg w-100 shadow-lg py-5 fw-bold">
+                    <i class="fas fa-file-csv fa-3x d-block mb-3 mx-auto"></i>
+                    Download CSV
+                    <small class="d-block mt-2 opacity-75">For Excel & Google Sheets</small>
+                </button>
+            </form>
+        </div>
+        
+        <!-- PDF -->
+        <div class="col-md-5 col-12">
+            <form action="/export_pdf" method="POST">
+                <input type="hidden" name="report_data" value='{{ report_data | tojson }}'>
+                <input type="hidden" name="company_name" value="{{ company_name }}">
+                <input type="hidden" name="scope1" value="{{ scope1 }}">
+                <input type="hidden" name="scope2" value="{{ scope2 }}">
+                <input type="hidden" name="scope3" value="{{ scope3 }}">
+                <input type="hidden" name="total" value="{{ total }}">
+                <input type="hidden" name="per_employee" value="{{ per_employee }}">
+                <button type="submit" class="btn btn-primary btn-lg w-100 shadow-lg py-5 fw-bold">
+                    <i class="fas fa-file-pdf fa-3x d-block mb-3 mx-auto text-danger"></i>
+                    Download PDF
+                    <small class="d-block mt-2 opacity-75">For Reports & Presentation</small>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <p class="text-muted small">
+        <i class="fas fa-lock me-1"></i>
+        Your data is processed locally — nothing is stored on our servers.
+    </p>
+</div>
+
+<div class="text-center mt-5 mb-5">
+    <a href="/" class="btn btn-outline-secondary btn-lg px-5 shadow-sm">Start New Calculation</a>
+</div>
